@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>制作学校园卡</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="jquery.js"></script>
+<script src="ajaxfileupload.js"></script>
+<script type="text/javascript">
+	function ajaxFileUpload(type) {
+		debugger;
+		var file;
+		var fileElementId;
+		if (type == 1) {
+			file = document.getElementById("fileToUpload_excel").value;
+			fileElementId = "fileToUpload_excel";
+			var pos = file.lastIndexOf('.xls');
+			if (pos == -1) {
+				alert("请上传excel格式文件");
+				return false;
+			}
+		} else if (type == 2) {
+			file = document.getElementById("fileToUpload_zip").value;
+			fileElementId = "fileToUpload_zip";
+			var pos = file.lastIndexOf('.zip');
+			if (pos == -1) {
+				alert("请上传zip包!");
+				return false;
+			}
+		} else if (type == 3) {
+			file = document.getElementById("fileToUpload_jpg").value;
+			fileElementId = "fileToUpload_jpg";
+			var pos = file.lastIndexOf('.jpg');
+			if (pos == -1) {
+				alert("请上传jpg格式文件");
+				return false;
+			}
+		}
+		if (file == null) {
+			alert('请选择文件');
+			return false;
+		}
+		$
+				.ajaxFileUpload({
+					url : "uploadFile?type=" + type,
+					secureuri : false,
+					async : false,
+					fileElementId : fileElementId,
+					dataType : 'json',
+					data : {
+						type : type
+					},
+					success : function(data, status) {
+						if (type == 1) {
+							document.getElementById("student_name_file_path").value = data.path;
+						} else if (type == 2) {
+							document.getElementById("student_poto_file_path").value = data.path;
+						} else if (type == 3) {
+							document
+									.getElementById("student_template_file_path").value = data.path;
+						}
+					},
+					error : function(data, status, e) {
+						alert('上传出错');
+					}
+				});
+		return false;
+	}
+
+	function formSubmit() {
+		debugger;
+		file1 = document.getElementById("student_name_file_path").value;
+		file2 = document.getElementById("student_poto_file_path").value;
+		file3 = document.getElementById("student_template_file_path").value;
+		if (file1 == null || file1 == "") {
+			alert('请选择excel文件');
+			return false;
+		}
+		if (file2 == null || file2 == "") {
+			alert('请选择zip文件');
+			return false;
+		}
+		if (file3 == null || file3 == "") {
+			alert('请选择jpg文件');
+			return false;
+		}
+		return true;
+	}
+</script>
+</head>
+<body>
+	<form class="form-horizontal" role="form" method="post" id="postForm"
+		action="createStudentCard">
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label">设置照片放置模板位置的高度</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" name="potoHeight"
+					id="potoHeight" placeholder="请输入值，默认为38"
+					onkeyup="this.value=this.value.replace(/\D/g,'')">
+			</div>
+		</div>
+		<div class="form-group" id="versionNameDiv">
+			<label class="col-sm-2 control-label">设置照片放置模板位置的宽度</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="potoWidth"
+					name="potoWidth" value="" placeholder="请输入值，默认为81"
+					onkeyup="this.value=this.value.replace(/\D/g,'')">
+			</div>
+		</div>
+		<div class="form-group" id="versionNameDiv">
+			<label class="col-sm-2 control-label">设置学生编码</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="studentCode"
+					name="studentCode" value="" placeholder="请输入值
+					onkeyup="
+					this.value=this.value.replace(/\D/g,'')">
+			</div>
+		</div>
+		<div class="form-group" id="uploadFileDiv">
+			<label class="col-sm-2 control-label">上传学生姓名excel</label>
+			<div class="col-sm-10">
+				<input id="fileToUpload_excel" type="file" name="fileToUpload_excel"
+					class="input-xlarge">
+					<button class="btn btn-default btn-sm" size="80"
+						onclick="if(ajaxFileUpload(1) == false) return false;">上传
+
+					</button>
+			</div>
+		</div>
+		<div class="form-group" id="versionNameDiv">
+			<label class="col-sm-2 control-label">学生名单excel的path</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="student_name_file_path"
+					readonly="readonly" name="student_name_file_path" value=""
+					placeholder="请输入值"
+					onkeyup="this.value=this.value.replace(/\D/g,'')">
+			</div>
+		</div>
+		<div class="form-group" id="uploadFileDiv">
+			<label class="col-sm-2 control-label">上传学生图片zip</label>
+			<div class="col-sm-10">
+				<input id="fileToUpload_zip" type="file" name="fileToUpload_zip"
+					class="input-xlarge">
+					<button class="btn btn-default btn-sm" size="80"
+						onclick="if(ajaxFileUpload(2) == false) return false;">上传
+					</button>
+			</div>
+		</div>
+		<div class="form-group" id="versionNameDiv">
+			<label class="col-sm-2 control-label">学生图片的path</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="student_poto_file_path"
+					readonly="readonly" name="student_poto_file_path" value=""
+					placeholder="请输入值"
+					onkeyup="this.value=this.value.replace(/\D/g,'')">
+			</div>
+		</div>
+		<div class="form-group" id="uploadFileDiv">
+			<label class="col-sm-2 control-label">上传模板jpg</label>
+			<div class="col-sm-10">
+				<input id="fileToUpload_jpg" type="file" name="fileToUpload_jpg"
+					class="input-xlarge">
+					<button class="btn btn-default btn-sm" size="80"
+						onclick="if(ajaxFileUpload(3) == false) return false;">上传
+					</button>
+			</div>
+		</div>
+		<div class="form-group" id="versionNameDiv">
+			<label class="col-sm-2 control-label">模板的path</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control"
+					id="student_template_file_path" readonly="readonly"
+					name="student_template_file_path" value="" placeholder="请输入值"
+					onkeyup="this.value=this.value.replace(/\D/g,'')">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">描述</font></label>
+			<div class="col-sm-10">
+				<textarea id="description" name="description" rows="3" cols="96"
+					readonly="readonly" value="" placeholder="请输入图片的长度和高度，调整样色后再批量处理"></textarea>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="submit" class="btn btn-default btn-success"
+					onclick="if(formSubmit() == false) return false;">确定</button>
+			</div>
+		</div>
+	</form>
+</body>
+</html>
